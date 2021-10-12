@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <io.h>
 
 int main(int argc, char *argv[])
 {
@@ -15,8 +16,10 @@ int main(int argc, char *argv[])
 	int str_count = 0;
 	int word_count = 0;
 	int byte_count = 0;
+	int size;
 
 	FILE* file_reader;
+	FILE* file_reader_bytes;
 	file_reader = fopen(argv[2], "r");
 
 	if (!file_reader)
@@ -36,16 +39,17 @@ int main(int argc, char *argv[])
 		{
 			str_count++;
 			word_count++;
-			byte_count++;
 		}
 
-		byte_count++;
 		last_letter = letter;
 	}
 
-	fclose(file_reader);
-
 	str_count++;
+
+	fseek(file_reader, 0, SEEK_END);
+	size = ftell(file_reader);
+
+	fclose(file_reader);
 
 	if ((!strcmp(argv[1], "-l")) || (!strcmp(argv[1], "--lines")))
 	{
@@ -53,10 +57,14 @@ int main(int argc, char *argv[])
 	}
 	else if ((!strcmp(argv[1], "-c")) || (!strcmp(argv[1], "--bytes")))
 	{
-		printf("bytes: %d\n", byte_count);
+		printf("bytes: %d\n", size);
 	}
 	else if ((!strcmp(argv[1], "-w")) || (!strcmp(argv[1], "--words")))
 	{
 		printf("words: %d\n", word_count);
+	}
+	else
+	{
+		printf("Incorrect arguments");
 	}
 }	
